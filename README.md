@@ -38,8 +38,8 @@ so your code doesn't fill up with the accent colour.
 ## What it themes
 
 Everything except `hyprland.lua` is colour-only and survives `omarchy theme install`. Omarchy strips `*.lua` from
-cloned themes, so a clone falls back to Omarchy's generated borders and square corners; copy `hyprland.lua` into
-`~/.config/omarchy/themes/bench-grid/` by hand to get the 8px rounding and gaps. `colors.toml` drives the generated
+cloned themes, so a clone falls back to Omarchy's generated borders and square corners; see **Rounded corners and
+gaps** below to get the 8px rounding and gaps. `colors.toml` drives the generated
 configs; the `shell.*.toml`, `gtk.css`, `spicetify.ini` and VS Code files are hand-tuned with the same hex values,
 and `tools/build.sh` regenerates the VS Code theme from the palette.
 
@@ -76,9 +76,19 @@ another theme.
 </p>
 <p align="center"><sub>8px rounded corners and 8px gaps, lined up with the floating bar. Only the focused window gets the amber border.</sub></p>
 
-`omarchy theme install` strips `*.lua` from cloned themes, so these come from one manual step. Copy `hyprland.lua` from
-this repo into `~/.config/omarchy/themes/bench-grid/`, then run `omarchy theme set bench-grid`. To go back to square
-corners, run `omarchy hyprland corners sharp`.
+`omarchy theme install` ignores every `.lua` file in a cloned theme, so these settings go in your own Hyprland
+config instead. Add this to `~/.config/hypr/looknfeel.lua`:
+
+```lua
+hl.config({
+  general = { gaps_out = 8, gaps_in = 4 },          -- 8px from the screen edge, 8px between windows
+  decoration = { rounding = 8, rounding_power = 2 },
+})
+```
+
+Run `hyprctl reload` to see it. This file applies to every theme, so remove the block if you switch away. For rounded
+corners without the gaps, `omarchy hyprland corners rounded` gives Omarchy's own 6px corners. The amber and
+mat-green borders already come from the theme's colours.
 
 </details>
 

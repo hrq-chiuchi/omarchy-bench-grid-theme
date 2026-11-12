@@ -5,8 +5,7 @@
 <h1 align="center">Bench Grid</h1>
 
 <p align="center">
-  An Omarchy 4 theme taken from one desk: a forest-green cutting mat, cream keycaps,<br>
-  graphite monitors and a single amber task light.
+  An Omarchy 4 theme taken from one desk: a forest-green cutting mat, cream keycaps, graphite monitors and a single amber task light.
 </p>
 
 ```

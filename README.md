@@ -1,11 +1,27 @@
-# Bench Grid
+<p align="center">
+  <img src=".github/readme/banner.png" alt="Omarchy wordmark over a sage ruler, the Bench Grid login logo" width="100%">
+</p>
 
-An Omarchy 4 theme taken from one desk: a forest-green cutting mat, cream keycaps,
-graphite monitors and a single amber task light.
+<h1 align="center">Bench Grid</h1>
+
+<p align="center">
+  An Omarchy 4 theme taken from one desk: a forest-green cutting mat, cream keycaps,<br>
+  graphite monitors and a single amber task light.
+</p>
 
 ```
 omarchy theme install https://github.com/hrq-chiuchi/omarchy-bench-grid-theme.git
 ```
+
+<p align="center">
+  <img src=".github/readme/desktop.png" alt="Bench Grid desktop: cutting-mat wallpaper with the floating graphite bar" width="100%">
+</p>
+
+## Palette
+
+<p align="center">
+  <img src=".github/readme/palette.png" alt="The seven Bench Grid colours as keycaps on the mat" width="100%">
+</p>
 
 | Token | Hex | Role |
 |---|---|---|
@@ -37,7 +53,38 @@ and `tools/build.sh` regenerates the VS Code theme from the palette.
 - **Wallpapers**: cutting-mat grid with ruler edges (mat, night, graphite)
 - **Boot splash and login logo** (`unlock.png`): apply with `omarchy plymouth set by theme bench-grid`
 
-### Opt-in extras (Omarchy does not wire these by default)
+<p align="center">
+  <img src=".github/readme/wallpapers.png" alt="The three wallpapers: mat, night and graphite" width="100%">
+</p>
+
+## Opt-in extras
+
+Omarchy does not wire these by default, so each needs a step from you. The hooks undo their changes when you switch to
+another theme.
+
+<p align="center">
+  <img src=".github/readme/icons.png" alt="Bench Grid folder icons on the keycap page and on a mat selection" width="100%">
+</p>
+<p align="center">
+  <img src=".github/readme/cursors.png" alt="Bench Grid cursors: cream keycaps with a graphite edge" width="72%">
+</p>
+
+<details>
+<summary><b>Rounded corners and gaps (<code>hyprland.lua</code>)</b></summary>
+
+<p align="center">
+  <img src=".github/readme/windows.png" alt="A graphite terminal and a cream Files window with rounded corners and even gaps on the cutting-mat wallpaper, under the floating bar" width="100%">
+</p>
+<p align="center"><sub>8px rounded corners and 8px gaps, lined up with the floating bar. Only the focused window gets the amber border.</sub></p>
+
+`omarchy theme install` strips `*.lua` from cloned themes, so these come from one manual step. Copy `hyprland.lua` from
+this repo into `~/.config/omarchy/themes/bench-grid/`, then run `omarchy theme set bench-grid`. To go back to square
+corners, run `omarchy hyprland corners sharp`.
+
+</details>
+
+<details>
+<summary><b>GTK / Nautilus, Spotify, Starship</b></summary>
 
 - **Cream GTK / Nautilus**: add to `~/.config/gtk-3.0/gtk.css` and `~/.config/gtk-4.0/gtk.css`:
   `@import url("file:///home/<you>/.local/state/omarchy/current/theme/gtk.css");`
@@ -47,6 +94,11 @@ and `tools/build.sh` regenerates the VS Code theme from the palette.
 - **Starship**: merge `extras/starship-palettes.toml`, use the named colours
   (`prompt_mark`, `prompt_path`, …), and install the hook:
   `omarchy hook install theme-set extras/hooks/bench-grid-starship.sh`
+
+</details>
+
+<details>
+<summary><b>Apps hook: cursor, folder icons, lazygit, fastfetch, Typora, Oh My Pi, eza, fzf, tmux, mpv, Firefox</b></summary>
 
 - **lazygit, fastfetch, Typora, Oh My Pi, eza, fzf, tmux, mpv, Firefox, cursor, folder icons**: `omarchy hook install theme-set extras/hooks/bench-grid-apps.sh`.
   While Bench Grid is active it adds a marked block to lazygit's `config.yml` (skipped if you keep your own `gui:` section)
@@ -78,6 +130,17 @@ and `tools/build.sh` regenerates the VS Code theme from the palette.
   Firefox to see it; switching themes removes both (the pref itself stays set, which is harmless).
   **bat** needs nothing: Omarchy sets `BAT_THEME=ansi`, which already draws in the theme's terminal colours.
 
+</details>
+
+### Floating bar (experimental)
+
+<p align="center">
+  <img src=".github/readme/bar.png" alt="Both ends of the floating bar: keycap workspace numbers on the left, status icons and clock on the right" width="100%">
+</p>
+
+<details>
+<summary><b>What it is and how to install it</b></summary>
+
 - **Floating bar** (`extras/shell/`): a compact graphite card (26px, 11px text and icons; `shell.font.toml` sets the 11px text for the whole shell) inset 8px from the screen edges so it lines up with the window borders (`inset`; the theme's `hyprland.lua` sets 8px outer and 8px between-window gaps to match the mockup) and 6px above them (`gap`), with 4px of padding on every side (`padding`) and 24×18 numbered workspace
   keycaps with 10px numbers, shaped like the design's (a cream key on the workspace each monitor shows; click it to cycle
   the window layout, as in stock). Omarchy's bar is a full-width strip, so this is a patch on your
@@ -104,6 +167,10 @@ and `tools/build.sh` regenerates the VS Code theme from the palette.
     closer to its neighbour, e.g. `"slot": 10, "offset": -5` after the clock. Add `<user>.stay-awake` to `bar.layout.center` before
     `omarchy.indicators`, and give that entry `"items"` without `StayAwake`. In the tray drawer, give both entries `"alwaysShow": true` so the
     switched-off ones still show there.
+
+</details>
+
+## Fonts
 
 Recommended fonts: IBM Plex Mono (`ttf-ibmplex-mono-nerd`) for the terminal and bar, Sora for the interface.
 

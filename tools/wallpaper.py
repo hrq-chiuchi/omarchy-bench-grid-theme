@@ -47,7 +47,7 @@ out.append(f'<path d="{" ".join(major)}" fill="none" {stroke(a_major, 1.5)}/>')
 out.append(f'<path d="M{x0} {y0}L{x0 + y0} 0" fill="none" {stroke(a_minor * 0.9, 1)}/>')
 
 # Rulers: ticks and numbers along the bottom and left edges.
-stamp = f"HRQ · OMARCHY · {W}×{H} · 1 SQ = 1 CM"
+stamp = f"OMARCHY · {W}×{H} · 1 SQ = 1 CM"
 stamp_w = len(stamp) * fs * (0.6 + 0.18)      # mono advance + letter-spacing
 stamp_x0 = W - margin - stamp_w - cell
 ticks, labels = [], []

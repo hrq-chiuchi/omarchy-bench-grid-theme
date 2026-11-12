@@ -1,0 +1,36 @@
+# Graphite bar, cream text. "active" (recording, alerts, updates) is the task light.
+[bar]
+background       = "#17201c"
+background-alpha = 1.0
+text             = "#eee8dc"
+active           = "#f3a712"
+scale-with-font  = true
+size-horizontal  = 26
+size-vertical    = 26
+# Compact icons and slots, close to the 11px mono strip in the design.
+icon-slot        = 23
+icon-canvas      = 14
+icon-font        = 11
+icon-size        = 11
+status-slot      = 18
+# Floating card. Read only by the Bench Grid bar patch (extras/shell); the stock bar ignores these.
+inset            = 8
+radius           = 8
+border           = "#31483d"
+border-width     = 1
+# padding: inner margin on every side (workspace keys sit inside it). gap: card to windows.
+padding          = 4
+gap              = 6
+# Tray peek: no chevron; the tray drawer opens while the pointer is over the right section.
+# Read only by the Bench Grid bar patch and tray clone (extras/shell).
+tray-peek        = true
+# Muted icons: bar icons at rest in a soft cream (darker than the keycap cream), lit on hover or with their
+# panel open. Amber alerts keep their colour; the clock stays cream. Read only by the Bench Grid bar patch.
+icon-idle             = "#d0c8b8"
+icon-hover-brightness = 0.12
+icon-hover-saturation = 0
+# Workspace keys, read by the Bench Grid workspaces clone: sage numbers, a cream keycap on the focused one.
+workspace-text        = "#a8c7b7"
+workspace-hover       = "#26362f"
+workspace-active      = "#eee8dc"
+workspace-active-text = "#17201c"

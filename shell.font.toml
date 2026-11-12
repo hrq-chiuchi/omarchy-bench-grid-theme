@@ -1,0 +1,5 @@
+# Compact type: the bar reads at 11px like the design. Shared by every shell surface.
+[font]
+base-size  = 12
+body       = 11
+body-small = 10

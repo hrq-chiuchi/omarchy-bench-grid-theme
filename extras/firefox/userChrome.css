@@ -1,0 +1,68 @@
+/* bench-grid: Firefox chrome colours, installed as <profile>/chrome/userChrome.css by the theme-set hook
+   (removed on other themes; left alone if you keep your own userChrome.css). Restart Firefox to see it.
+   Graphite toolbar on a darker tab strip, mat-green selected tab; amber only for focus, loading and
+   attention. It only sets Firefox's own theme variables, so web pages
+   are untouched. */
+
+:root {
+  /* Tab strip and tabs */
+  --lwt-accent-color: #111814 !important;
+  --lwt-accent-color-inactive: #111814 !important;
+  --lwt-text-color: #a8c7b7 !important;
+  --tab-selected-bgcolor: #174d3a !important;
+  --tab-selected-textcolor: #eee8dc !important;
+  --tab-hover-background-color: rgba(168, 199, 183, 0.1) !important;
+  --tab-loading-fill: #f3a712 !important;
+
+  /* Navigation toolbar and buttons */
+  --toolbar-bgcolor: #17201c !important;
+  --toolbar-color: #eee8dc !important;
+  --toolbarbutton-icon-fill: #d9d2c3 !important;
+  --toolbarbutton-icon-fill-attention: #f3a712 !important;
+  --toolbarbutton-hover-background: rgba(168, 199, 183, 0.12) !important;
+  --toolbarbutton-active-background: rgba(23, 77, 58, 0.9) !important;
+  --chrome-content-separator-color: #26362f !important;
+
+  /* Address bar */
+  --toolbar-field-background-color: #111814 !important;
+  --toolbar-field-color: #eee8dc !important;
+  --toolbar-field-border-color: #26362f !important;
+  --toolbar-field-focus-background-color: #111814 !important;
+  --toolbar-field-focus-color: #eee8dc !important;
+  --toolbar-field-focus-border-color: #f3a712 !important;
+  --urlbarView-highlight-background: #174d3a !important;
+  --urlbarView-highlight-color: #eee8dc !important;
+  --urlbarView-separator-color: #26362f !important;
+  --focus-outline-color: #f3a712 !important;
+
+  /* Menus, panels and the sidebar */
+  --arrowpanel-background: #17201c !important;
+  --arrowpanel-color: #eee8dc !important;
+  --arrowpanel-border-color: #26362f !important;
+  --panel-separator-color: #26362f !important;
+  --panel-item-hover-bgcolor: rgba(168, 199, 183, 0.1) !important;
+  --panel-item-active-bgcolor: rgba(23, 77, 58, 0.9) !important;
+  --sidebar-background-color: #111814 !important;
+  --sidebar-text-color: #eee8dc !important;
+  --sidebar-border-color: #26362f !important;
+}
+
+/* The selected tab is a mat-green block in the focused window and fades to graphite in other windows. */
+.tab-background:is([selected], [multiselected]) {
+  background-color: #174d3a !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+:root:-moz-window-inactive .tab-background:is([selected], [multiselected]) {
+  background-color: #26362f !important;
+}
+
+.tab-label {
+  font-family: "Sora", sans-serif !important;
+}
+
+/* Selected text in the address bar uses the mat, as in the terminal. */
+#urlbar-input::selection {
+  background-color: #174d3a !important;
+  color: #eee8dc !important;
+}

@@ -1,0 +1,7 @@
+# Tooltips are cream keycaps: graphite text on the light surface.
+[tooltip]
+background       = "#eee8dc"
+background-alpha = 0.98
+text             = "#17201c"
+border           = "#cfc8bb"
+border-alpha     = 1.0

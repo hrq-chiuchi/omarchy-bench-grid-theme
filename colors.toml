@@ -1,0 +1,43 @@
+# Bench Grid — a cutting mat, cream keycaps, graphite monitors, one amber task light.
+#
+# Core tokens (from the workstation):
+#   mat        #174d3a   mat shadow #0d2f25   keycap #eee8dc
+#   graphite   #17201c   task light #f3a712   pine   #c78a4b   muted green #a8c7b7
+#
+# Rule: amber is the accent only (focus, cursor, active, urgent). yellow and
+# orange are deliberately quieter wood tones so code never fills with amber.
+mode = "dark"
+
+accent = "#f3a712"
+selection = "#174d3a"
+selection_foreground = "#eee8dc"
+muted = "#6f857a"
+
+background = "#17201c"
+dark_background = "#111814"
+darker_background = "#0d2f25"
+lighter_background = "#26362f"
+
+foreground = "#eee8dc"
+dark_foreground = "#a8c7b7"
+light_foreground = "#d9d2c3"
+bright_foreground = "#f7f3ea"
+
+red = "#e07a5f"
+yellow = "#d8b26a"
+orange = "#c78a4b"
+green = "#86b896"
+cyan = "#8fc1b0"
+blue = "#8aaec4"
+magenta = "#c49aae"
+brown = "#a8845c"
+
+bright_red = "#eb9580"
+bright_yellow = "#e6c78b"
+bright_green = "#a3ccb0"
+bright_cyan = "#abd3c5"
+bright_blue = "#a8c4d6"
+bright_magenta = "#d6b5c5"
+
+hyprland_active_border = "rgb(f3a712)"
+hyprland_inactive_border = "rgb(42584d)"

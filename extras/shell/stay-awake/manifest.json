@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "USER.stay-awake",
+  "name": "Stay awake dot",
+  "version": "1.0.0",
+  "author": "Bench Grid",
+  "license": "MIT",
+  "description": "Stay-awake as a small dot: amber while the system stays awake, a hollow ring on the indicator peek.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "StayAwake.qml"
+  },
+  "barWidget": {
+    "displayName": "Stay awake dot",
+    "description": "Stay-awake toggle drawn as a dot",
+    "category": "Status",
+    "allowMultiple": false
+  }
+}

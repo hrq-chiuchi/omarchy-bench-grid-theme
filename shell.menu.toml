@@ -1,0 +1,14 @@
+# Menus, clipboard and emoji pickers share the launcher treatment.
+[menu]
+background                = "#17201c"
+background-alpha          = 1.0
+text                      = "#eee8dc"
+border                    = "#42584d"
+border-alpha              = 1.0
+scrim                     = "#0d2f25"
+scrim-alpha               = 0.55
+selected-background       = "#174d3a"
+selected-background-alpha = 1.0
+selected-text             = "#eee8dc"
+selected-border           = "#f3a712"
+selected-border-alpha     = 1.0

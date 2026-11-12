@@ -1,0 +1,13 @@
+# Lock: a cream keycap on the mat. Amber while typing, brick on a wrong password.
+[lock]
+background       = "#eee8dc"
+background-alpha = 0.96
+text             = "#17201c"
+placeholder      = "#6f7a73"
+text-error       = "#a8402a"
+border           = "#174d3a"
+border-active    = "#f3a712"
+border-error     = "#c2553b"
+border-alpha     = 1.0
+selection        = "#174d3a"
+selection-alpha  = 0.35

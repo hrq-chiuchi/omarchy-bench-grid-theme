@@ -1,0 +1,180 @@
+/* Bench Grid for Obsidian: a cream keycap page on graphite chrome, like the Typora theme.
+   Omarchy copies this file (instead of its obsidian.css template) into every vault as the
+   "Omarchy" theme; pick Omarchy once under Settings > Appearance > Themes.
+   Graphite text, mat-green structure, graphite code blocks; amber only on the caret, the focused
+   tab and the focused graph node. */
+
+/* ---------------------------------------------------------------- chrome (sidebars, tabs, dialogs) */
+.theme-dark, .theme-light {
+  --font-text-theme: "Sora", sans-serif;
+  --font-interface-theme: "Sora", sans-serif;
+  --font-monospace-theme: "BlexMono Nerd Font", "IBM Plex Mono", monospace;
+
+  --background-primary: #17201c;
+  --background-primary-alt: #111814;
+  --background-secondary: #111814;
+  --background-secondary-alt: #111814;
+  --titlebar-background: #111814;
+  --titlebar-background-focused: #111814;
+  --ribbon-background: #111814;
+  --background-modifier-border: #26362f;
+  --background-modifier-border-hover: #42584d;
+  --background-modifier-border-focus: #6f857a;
+  --background-modifier-hover: rgba(168, 199, 183, 0.08);
+  --background-modifier-active-hover: rgba(23, 77, 58, 0.6);
+  --background-modifier-form-field: #111814;
+
+  --text-normal: #eee8dc;
+  --text-muted: #a8c7b7;
+  --text-faint: #6f857a;
+  --text-on-accent: #eee8dc;
+  --text-accent: #a8c7b7;
+  --text-accent-hover: #eee8dc;
+  --text-selection: rgba(23, 77, 58, 0.75);
+  --text-error: #e07a5f;
+  --text-success: #86b896;
+  --text-warning: #d8b26a;
+  --caret-color: #f3a712;
+
+  --color-accent: #2b6b53;
+  --interactive-normal: #26362f;
+  --interactive-hover: #2f4239;
+  --interactive-accent: #174d3a;
+  --interactive-accent-hover: #1f5c46;
+
+  --nav-item-color-active: #eee8dc;
+  --nav-item-background-active: #174d3a;
+  --icon-color-active: #eee8dc;
+  --scrollbar-thumb-bg: rgba(168, 199, 183, 0.18);
+  --scrollbar-active-thumb-bg: rgba(168, 199, 183, 0.32);
+
+  --checkbox-color: #174d3a;
+  --checkbox-color-hover: #1f5c46;
+  --checkbox-marker-color: #eee8dc;
+
+  --graph-line: #42584d;
+  --graph-node: #a8c7b7;
+  --graph-node-focused: #f3a712;
+  --graph-node-tag: #c78a4b;
+  --graph-node-attachment: #86b896;
+  --graph-node-unresolved: #6f857a;
+  --graph-text: #d9d2c3;
+}
+
+/* The tab in the focused pane gets the task light. */
+.workspace-tabs.mod-active .workspace-tab-header.is-active {
+  box-shadow: inset 0 -2px 0 #f3a712;
+}
+
+/* ---------------------------------------------------------------- the note: a cream page */
+.workspace-leaf-content[data-type="markdown"] {
+  --background-primary: #eee8dc;
+  --background-primary-alt: #e2ddcf;
+  --background-secondary: #e2ddcf;
+  --background-modifier-border: #cfc8bb;
+  --background-modifier-border-hover: #b9b1a2;
+  --background-modifier-hover: rgba(23, 77, 58, 0.06);
+  --background-modifier-form-field: #f5f1e8;
+
+  --text-normal: #17201c;
+  --text-muted: #4b5750;
+  --text-faint: #7d877f;
+  --text-accent: #174d3a;
+  --text-accent-hover: #0d2f25;
+  --text-selection: rgba(23, 77, 58, 0.22);
+  --text-highlight-bg: #f6dfa8;
+  --text-error: #a8452c;
+  --text-success: #2f6b45;
+  --text-warning: #8a5a2b;
+  --icon-color: #4b5750;
+  --icon-color-hover: #17201c;
+
+  --link-color: #174d3a;
+  --link-color-hover: #0d2f25;
+  --link-external-color: #174d3a;
+  --link-external-color-hover: #0d2f25;
+  --link-unresolved-color: #8a5a2b;
+  --link-unresolved-opacity: 0.85;
+
+  --h1-color: #17201c;
+  --h2-color: #17201c;
+  --h3-color: #17201c;
+  --h4-color: #17201c;
+  --h5-color: #4b5750;
+  --h6-color: #4b5750;
+  --h1-font: "Sora", sans-serif;
+  --heading-formatting: #7d877f;
+
+  --hr-color: #b9b1a2;
+  --blockquote-border-color: #174d3a;
+  --blockquote-background-color: rgba(23, 77, 58, 0.05);
+  --list-marker-color: #174d3a;
+  --checkbox-border-color: #4b5750;
+  --tag-color: #174d3a;
+  --tag-color-hover: #0d2f25;
+  --tag-background: rgba(23, 77, 58, 0.09);
+  --tag-background-hover: rgba(23, 77, 58, 0.16);
+  --tag-border-color: rgba(23, 77, 58, 0.2);
+
+  --table-header-background: #174d3a;
+  --table-header-color: #eee8dc;
+  --table-border-color: #cfc8bb;
+  --table-row-alt-background: rgba(23, 77, 58, 0.04);
+
+  /* Code blocks are graphite monitors set into the page. */
+  --code-background: #17201c;
+  --code-normal: #eee8dc;
+  --code-comment: #6f857a;
+  --code-keyword: #c49aae;
+  --code-function: #8aaec4;
+  --code-string: #86b896;
+  --code-value: #c78a4b;
+  --code-property: #8fc1b0;
+  --code-tag: #d8b26a;
+  --code-operator: #a8c7b7;
+  --code-punctuation: #a8c7b7;
+  --code-important: #e07a5f;
+}
+
+/* A faint 1 cm grid behind the page, like the mat under the sheet. */
+.workspace-leaf-content[data-type="markdown"] .view-content {
+  background-image:
+    linear-gradient(rgba(23, 77, 58, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 77, 58, 0.045) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Inline code stays on the page: a darker cream chip, not a graphite block. */
+.markdown-rendered :not(pre) > code,
+.markdown-source-view.mod-cm6 .cm-inline-code {
+  background: #e2ddcf;
+  color: #1f3d31;
+}
+
+/* Fenced code: cream selection would vanish on graphite, so use the mat. */
+.markdown-rendered pre,
+.markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  border-color: #26362f;
+}
+.markdown-rendered pre ::selection,
+.markdown-source-view.mod-cm6 .HyperMD-codeblock ::selection {
+  background: #174d3a;
+}
+
+.markdown-rendered h1 {
+  padding-bottom: 0.3em;
+  border-bottom: 2px solid #174d3a;
+}
+.markdown-rendered h2 {
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid #cfc8bb;
+}
+.markdown-rendered h6 {
+  font-family: var(--font-monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.markdown-rendered mark,
+.markdown-source-view.mod-cm6 .cm-highlight {
+  color: #17201c;
+}

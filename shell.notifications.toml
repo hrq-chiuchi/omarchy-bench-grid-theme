@@ -1,0 +1,8 @@
+# A notification is a changed state, so it gets the amber edge.
+[notifications]
+background       = "#17201c"
+background-alpha = 1.0
+text             = "#eee8dc"
+border           = "#f3a712"
+border-alpha     = 1.0
+countdown        = "#f3a712"

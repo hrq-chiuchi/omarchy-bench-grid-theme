@@ -1,0 +1,7 @@
+# bench-grid: fzf colours. The theme-set hook copies this to ~/.local/state/bench-grid/fzfrc
+# (and empties it on other themes); ~/.bashrc points FZF_DEFAULT_OPTS_FILE there.
+# Matches are wheat; amber marks only the focused line and selections.
+--color=fg:#d9d2c3,bg:-1,hl:#d8b26a
+--color=fg+:#eee8dc,bg+:#174d3a,hl+:#f3a712,gutter:-1
+--color=pointer:#f3a712,marker:#f3a712,prompt:#a8c7b7,info:#6f857a,spinner:#a8c7b7
+--color=border:#42584d,label:#a8c7b7,header:#c78a4b,query:#eee8dc,separator:#42584d,scrollbar:#42584d

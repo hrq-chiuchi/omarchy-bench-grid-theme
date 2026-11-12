@@ -1,0 +1,252 @@
+--- a/Bar.qml	2026-11-09 12:50:59.299219387 -0300
++++ b/Bar.qml	2026-11-09 15:46:18.305491503 -0300
+@@ -71,6 +71,16 @@
+   // by this name through their bar API.
+   property bool centerSectionRevealHeld: false
+   property bool centerHoverRevealSuppressed: false
++  // Tray peek (Bench Grid patch). A theme opts in from shell.toml [bar]: tray-peek = true. The tray then
++  // drops its chevron and its drawer opens while the pointer is over the right section, the way the
++  // indicator peek opens over the start of the bar. Read by the cloned tray widget through the bar API.
++  readonly property bool trayPeek: String(Commons.Color.pick("bar.tray-peek", "false")) === "true"
++  property int rightHoverCount: 0
++  property bool rightSectionRevealHeld: false
++  // With the tray peek on, the indicator peek (inactive indicators revealed) follows the right section
++  // too, and the left-side peek is off: indicators placed beside the tray then slide out with its drawer,
++  // while active ones stay on the bar.
++  onRightSectionRevealHeldChanged: if (trayPeek) centerSectionRevealHeld = rightSectionRevealHeld
+   property int barConfigSerial: 0
+   property string position: "top"
+   // Resolves through fontconfig at paint time (Style.font.family defaults
+@@ -83,7 +93,24 @@
+   property color themeContrastForeground: Commons.Color.background
+   property color transparentForeground: Commons.Color.bar.text
+   property color foreground: themeForeground
+-  property color barForeground: useTransparentForeground ? transparentForeground : themeForeground
++  property color barForeground: useTransparentForeground ? transparentForeground : iconIdle
++  // Muted icons (Bench Grid patch). A theme opts in from shell.toml [bar]: icon-idle (the bar's
++  // icon/text colour at rest) and icon-hover-brightness (how much the widget under the pointer, or
++  // with its panel open, is lit). Panels keep `foreground`; a clock clone keeps the full text colour
++  // (bar API barForeground, see bindPluginBarApi), since first-party widgets all share this one colour.
++  readonly property string iconIdleSpec: String(Commons.Color.pick("bar.icon-idle", ""))
++  readonly property color iconIdle: iconIdleSpec !== "" ? Commons.Color.flatColor(iconIdleSpec, themeForeground) : themeForeground
++  readonly property bool iconMuted: iconIdleSpec !== ""
++  readonly property real iconHoverBrightness: iconMuted ? cardNumber("bar.icon-hover-brightness", 0.25) : 0
++  // 0 keeps the icon's hue as it brightens; negative pulls it toward white (e.g. -0.8 keeps a sage idle
++  // colour from lighting up mint). Signed, so not read through cardNumber.
++  readonly property real iconHoverSaturation: {
++    var n = Number(Commons.Color.pick("bar.icon-hover-saturation", "0"))
++    return isFinite(n) ? Math.max(-1, Math.min(1, n)) : 0
++  }
++  function keepsFullForeground(moduleName) {
++    return iconMuted && /\.clock$/.test(String(moduleName || ""))
++  }
+   property bool foregroundAnimationEnabled: true
+   property color background: Commons.Color.bar.background
+   readonly property color glassBackground: Qt.rgba(background.r, background.g, background.b, Math.min(background.a, 0.35))
+@@ -221,7 +248,10 @@
+ 
+   Component {
+     id: pluginBarApiComponent
+-    PluginBarApi { }
++    PluginBarApi {
++      property bool trayPeek: false
++      property bool rightSectionRevealHeld: false
++    }
+   }
+ 
+   function publicLayoutConfig() {
+@@ -231,7 +261,9 @@
+   function bindPluginBarApi(api) {
+     if (!api) return
+     api.foreground = Qt.binding(function() { return root.foreground })
+-    api.barForeground = Qt.binding(function() { return root.barForeground })
++    api.barForeground = Qt.binding(function() {
++      return root.keepsFullForeground(api.moduleName) && !root.useTransparentForeground ? root.themeForeground : root.barForeground
++    })
+     api.background = Qt.binding(function() { return root.background })
+     api.urgent = Qt.binding(function() { return root.urgent })
+     api.fontFamily = Qt.binding(function() { return root.fontFamily })
+@@ -242,6 +274,8 @@
+     api.foregroundAnimationEnabled = Qt.binding(function() { return root.foregroundAnimationEnabled })
+     api.centerSectionRevealHeld = Qt.binding(function() { return root.centerSectionRevealHeld })
+     api._centerHoverRevealSuppressed = Qt.binding(function() { return root.centerHoverRevealSuppressed })
++    api.trayPeek = Qt.binding(function() { return root.trayPeek })
++    api.rightSectionRevealHeld = Qt.binding(function() { return root.rightSectionRevealHeld })
+     api.traySectionDragActive = Qt.binding(function() { return root.traySectionDragActive })
+     api.traySectionPopoutOpen = Qt.binding(function() { return root.traySectionPopoutOpen })
+     root.syncPluginBarApiObjects(api)
+@@ -715,6 +749,28 @@
+   readonly property bool vertical: position === "left" || position === "right"
+   readonly property int barSize: vertical ? Style.bar.sizeVertical : Style.bar.sizeHorizontal
+ 
++  // Floating card (Bench Grid patch). A theme opts in from shell.toml [bar]: inset (px from the screen
++  // edges), radius, border, border-alpha, border-width, padding (inner margin on every side) and gap
++  // (px between the card and the windows). Without inset the bar is the stock strip.
++  function cardNumber(key, fallback) {
++    var n = Number(Commons.Color.pick(key, String(fallback)))
++    return isFinite(n) && n >= 0 ? n : fallback
++  }
++  readonly property real cardInset: cardNumber("bar.inset", 0)
++  readonly property bool floating: cardInset > 0
++  readonly property real cardRadius: floating ? cardNumber("bar.radius", 8) : 0
++  readonly property real cardBorderWidth: floating ? cardNumber("bar.border-width", 1) : 0
++  readonly property color cardBorder: Util.alpha(Commons.Color.flatColor(Commons.Color.pick("bar.border", "foreground"), Commons.Color.foreground),
++                                                 Commons.Color.pickAlpha("bar.border-alpha", 1.0))
++  readonly property real cardPadding: floating ? cardNumber("bar.padding", -1) : -1
++  readonly property real sectionMargin: cardPadding >= 0 ? cardPadding : Style.space(8)
++  readonly property real windowGap: floating ? cardNumber("bar.gap", -1) : -1
++  // Hyprland adds gaps_out past the reserved zone (Style.gapsOut is half of it), so reserve less to
++  // leave exactly windowGap between the card and the windows.
++  function reservedFor(thickness) {
++    return windowGap >= 0 ? Math.max(0, thickness + Math.round(windowGap) - Style.gapsOut * 2) : thickness
++  }
++
+   // Display cutouts (a camera notch) the platform's own package describes in
+   // the fixed platform root, which no environment variable moves. Most machines
+   // have none. It is read as the shell starts (blockLoading), so a bar surface
+@@ -762,8 +818,9 @@
+   // the cutout is this panel's minimum sensible top-bar height. An
+   // intentionally taller bar still wins.
+   function thicknessFor(screen) {
+-    if (root.vertical || !screen) return root.barSize
+-    return Math.max(root.barSize, BarModel.notchFloor(root.displayCutouts, root.position, screen.name, screen.width, screen.height, screen.devicePixelRatio, root.panelModeFor(screen), Style.bar.notchHeight))
++    var inset = Math.ceil(root.cardInset)
++    if (root.vertical || !screen) return root.barSize + inset
++    return inset + Math.max(root.barSize, BarModel.notchFloor(root.displayCutouts, root.position, screen.name, screen.width, screen.height, screen.devicePixelRatio, root.panelModeFor(screen), Style.bar.notchHeight))
+   }
+ 
+   // Each screen's bar thickness, by screen name: barSize, or more where a notch
+@@ -1024,6 +1081,24 @@
+     }
+   }
+ 
++  // Counted per bar surface, like barHoverCount. The right section grows away from the pointer as the
++  // drawer opens, so its own bounds can hold the peek without the indicator peek's held edge.
++  function setRightSectionHovered(hovered) {
++    rightHoverCount = Math.max(0, rightHoverCount + (hovered ? 1 : -1))
++    if (rightHoverCount > 0) {
++      rightSectionRevealTimer.stop()
++      rightSectionRevealHeld = true
++    } else {
++      rightSectionRevealTimer.restart()
++    }
++  }
++
++  Timer {
++    id: rightSectionRevealTimer
++    interval: 200
++    onTriggered: if (root.rightHoverCount === 0) root.rightSectionRevealHeld = false
++  }
++
+   function setCenterHoverRevealSuppressed(value) {
+     centerHoverRevealSuppressed = !!value
+   }
+@@ -1724,7 +1799,7 @@
+     // An explicit zone instead of Auto: the reserved area stays the strip's
+     // thickness though the window spans its screen.
+     exclusionMode: root.barHidden ? ExclusionMode.Ignore : ExclusionMode.Normal
+-    exclusiveZone: thickness
++    exclusiveZone: root.reservedFor(thickness)
+ 
+     // While this window's widget or bar-move drag is live, the whole surface
+     // takes input (mask below), so the pointer never leaves the bar surface
+@@ -1833,20 +1908,33 @@
+       width: root.vertical ? barWindow.thickness : parent.width
+       height: root.vertical ? parent.height : barWindow.thickness
+ 
+-      Rectangle {
++      // The card: inset on the screen edge and both ends, flush on the side facing the windows.
++      Item {
++        id: cardArea
+         anchors.fill: parent
++        anchors.topMargin: root.position === "bottom" ? 0 : root.cardInset
++        anchors.bottomMargin: root.position === "top" ? 0 : root.cardInset
++        anchors.leftMargin: root.position === "right" ? 0 : root.cardInset
++        anchors.rightMargin: root.position === "left" ? 0 : root.cardInset
++      }
++
++      Rectangle {
++        anchors.fill: cardArea
++        radius: root.cardRadius
+         color: root.transparent ? "transparent" : (root.glassy ? root.glassBackground : root.background)
++        border.color: root.cardBorder
++        border.width: root.cardBorderWidth
+       }
+ 
+       Loader {
+-        anchors.fill: parent
++        anchors.fill: cardArea
+         sourceComponent: root.vertical ? verticalBar : horizontalBar
+ 
+         // A child of the loader, not a sibling of the sections: an ancestor stays
+         // hovered while the pointer is over a widget, where a sibling would lose
+         // hover to the section the pointer entered.
+         HoverHandler {
+-          readonly property bool peeking: hovered && BarModel.peeksAt(point.position, barWindow.peekEdge, root.vertical)
++          readonly property bool peeking: !root.trayPeek && hovered && BarModel.peeksAt(point.position, barWindow.peekEdge, root.vertical)
+           onPeekingChanged: root.setBarHovered(peeking)
+           // Unplugging a monitor destroys its bar without a leave event, which
+           // would strand this surface's tally and hold the peek open for good.
+@@ -1950,7 +2038,7 @@
+           window: barWindow
+           pool: horizontalPool
+           anchors.left: parent.left
+-          anchors.leftMargin: Style.space(8)
++          anchors.leftMargin: root.sectionMargin
+           anchors.verticalCenter: parent.verticalCenter
+         }
+ 
+@@ -1959,7 +2047,7 @@
+           pool: horizontalPool
+           id: rightModules
+           anchors.right: parent.right
+-          anchors.rightMargin: Style.space(8)
++          anchors.rightMargin: root.sectionMargin
+           anchors.verticalCenter: parent.verticalCenter
+         }
+ 
+@@ -1999,7 +2087,7 @@
+           window: barWindow
+           pool: verticalPool
+           anchors.top: parent.top
+-          anchors.topMargin: Style.space(8)
++          anchors.topMargin: root.sectionMargin
+           anchors.horizontalCenter: parent.horizontalCenter
+         }
+ 
+@@ -2007,7 +2095,7 @@
+           window: barWindow
+           pool: verticalPool
+           anchors.bottom: parent.bottom
+-          anchors.bottomMargin: Style.space(8)
++          anchors.bottomMargin: root.sectionMargin
+           anchors.horizontalCenter: parent.horizontalCenter
+         }
+       }
+@@ -2275,6 +2363,12 @@
+     keys: root.layoutWidgets.sections.right
+     region: "right"
+     fixedEdge: "end"
++
++    HoverHandler {
++      enabled: root.trayPeek
++      onHoveredChanged: root.setRightSectionHovered(hovered)
++      Component.onDestruction: if (hovered) root.setRightSectionHovered(false)
++    }
+   }
+ 
+   // The gesture area under the whole bar, with the center sections drawn over
+@@ -2980,6 +3074,13 @@
+         anchors.centerIn: parent
+         width: slot.widgetWidth
+         height: slot.widgetHeight
++
++        // Muted icons (Bench Grid patch): light the widget under the pointer. Not the workspaces
++        // (their keys have their own hover) nor a tray hosting the drawer (it would light all of it).
++        readonly property bool lit: root.iconHoverBrightness > 0 && (slot.hovered || slot.panelOpen)
++          && !slot.hostsTraySection && !/\.workspaces$/.test(slot.moduleName)
++        layer.enabled: lit
++        layer.effect: MultiEffect { brightness: root.iconHoverBrightness; saturation: root.iconHoverSaturation }
+       }
+ 
+       // The tray section's outline, as the center box's: around what it

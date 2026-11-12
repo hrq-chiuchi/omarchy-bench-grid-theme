@@ -1,0 +1,29 @@
+# Idle chrome is quiet muted green; focus is amber. selected-color tints both fill
+# and text, so selection stays a light cream wash (the mat cannot fill behind cream text here).
+[controls]
+normal-color        = "#eee8dc"
+normal-fill-alpha   = 0.04
+normal-border       = "#a8c7b7"
+normal-border-width = 1
+normal-border-alpha = 0.35
+
+hover-cursor-color        = "#eee8dc"
+hover-cursor-fill-alpha   = 0.08
+hover-cursor-border       = "#a8c7b7"
+hover-cursor-border-width = 1
+hover-cursor-border-alpha = 0.5
+
+focus-color        = "#eee8dc"
+focus-fill-alpha   = 0.08
+focus-border       = "#f3a712"
+focus-border-width = 1
+focus-border-alpha = 1.0
+
+selected-color        = "#eee8dc"
+selected-fill-alpha   = 0.16
+selected-border       = "#a8c7b7"
+selected-border-width = 0
+selected-border-alpha = 1.0
+
+pressed-fill-alpha   = 0.22
+selection-fill-alpha = 0.35

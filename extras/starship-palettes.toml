@@ -1,0 +1,15 @@
+# Named prompt colours. "default" is the original all-cyan prompt.
+[palettes.default]
+prompt_mark = "cyan"
+prompt_error = "cyan"
+prompt_path = "cyan"
+prompt_branch = "cyan"
+prompt_status = "cyan"
+
+# Bench Grid: amber marks the prompt, cream path, quiet sage for git.
+[palettes.bench_grid]
+prompt_mark = "#f3a712"
+prompt_error = "#e07a5f"
+prompt_path = "#eee8dc"
+prompt_branch = "#a8c7b7"
+prompt_status = "#d8b26a"

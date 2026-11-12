@@ -1,0 +1,245 @@
+/* Bench Grid — GTK3 / GTK4 / libadwaita.
+   Cream keycap surfaces with graphite text; mat green selects, amber is reserved for focus.
+   The desktop stays in dark mode for the terminal and the shell, so every surface
+   is defined here explicitly, not left to the Adwaita-dark defaults.
+
+   Omarchy does not load a theme's gtk.css on its own. Import it from
+   ~/.config/gtk-3.0/gtk.css and ~/.config/gtk-4.0/gtk.css:
+     @import url("file:///home/<you>/.local/state/omarchy/current/theme/gtk.css");  */
+
+/* libadwaita / GTK4 */
+@define-color accent_color #174d3a;
+@define-color accent_bg_color #174d3a;
+@define-color accent_fg_color #eee8dc;
+@define-color destructive_color #a8402a;
+@define-color destructive_bg_color #c2553b;
+@define-color destructive_fg_color #f7f3ea;
+@define-color success_color #1f6b4f;
+@define-color success_bg_color #174d3a;
+@define-color success_fg_color #eee8dc;
+@define-color warning_color #8a5a12;
+@define-color warning_bg_color #f3a712;
+@define-color warning_fg_color #17201c;
+@define-color error_color #a8402a;
+@define-color error_bg_color #c2553b;
+@define-color error_fg_color #f7f3ea;
+
+@define-color window_bg_color #eee8dc;
+@define-color window_fg_color #17201c;
+@define-color view_bg_color #eee8dc;
+@define-color view_fg_color #17201c;
+@define-color headerbar_bg_color #eee8dc;
+@define-color headerbar_fg_color #17201c;
+@define-color headerbar_border_color #cfc8bb;
+@define-color headerbar_backdrop_color #e8e2d5;
+@define-color headerbar_shade_color rgba(23, 32, 28, 0.08);
+@define-color headerbar_darker_shade_color rgba(23, 32, 28, 0.12);
+@define-color sidebar_bg_color #e2ddcf;
+@define-color sidebar_fg_color #17201c;
+@define-color sidebar_backdrop_color #e6e1d4;
+@define-color sidebar_border_color #cfc8bb;
+@define-color sidebar_shade_color rgba(23, 32, 28, 0.07);
+@define-color secondary_sidebar_bg_color #e8e3d7;
+@define-color secondary_sidebar_fg_color #17201c;
+@define-color secondary_sidebar_backdrop_color #ebe6da;
+@define-color secondary_sidebar_border_color #cfc8bb;
+@define-color card_bg_color #f5f1e8;
+@define-color card_fg_color #17201c;
+@define-color card_shade_color rgba(23, 32, 28, 0.07);
+@define-color dialog_bg_color #eee8dc;
+@define-color dialog_fg_color #17201c;
+@define-color popover_bg_color #f5f1e8;
+@define-color popover_fg_color #17201c;
+@define-color popover_shade_color rgba(23, 32, 28, 0.10);
+@define-color thumbnail_bg_color #f5f1e8;
+@define-color thumbnail_fg_color #17201c;
+@define-color shade_color rgba(23, 32, 28, 0.08);
+@define-color scrollbar_outline_color rgba(238, 232, 220, 0.6);
+
+/* GTK3 */
+@define-color theme_bg_color #eee8dc;
+@define-color theme_fg_color #17201c;
+@define-color theme_base_color #eee8dc;
+@define-color theme_text_color #17201c;
+@define-color theme_selected_bg_color #174d3a;
+@define-color theme_selected_fg_color #eee8dc;
+@define-color theme_unfocused_bg_color #e8e2d5;
+@define-color theme_unfocused_fg_color #17201c;
+@define-color theme_unfocused_base_color #eee8dc;
+@define-color theme_unfocused_text_color #17201c;
+@define-color theme_unfocused_selected_bg_color #2a5a47;
+@define-color theme_unfocused_selected_fg_color #eee8dc;
+@define-color insensitive_bg_color #e2ddcf;
+@define-color insensitive_fg_color #6f7a73;
+@define-color insensitive_base_color #e8e3d7;
+@define-color borders #cfc8bb;
+@define-color unfocused_borders #d8d2c6;
+
+/* Keyboard focus is the one place amber appears in GTK. */
+*:focus-visible {
+  outline-color: #f3a712;
+}
+
+/* Text selection: mat with cream text, never amber. */
+selection,
+text selection,
+entry selection,
+label selection {
+  background-color: #174d3a;
+  color: #eee8dc;
+}
+
+/* Selected sidebar places and files: cut from the mat, cream text (prototype rule). */
+.navigation-sidebar > row:selected,
+placessidebar row:selected,
+.sidebar-pane row:selected,
+columnview > listview > row:selected,
+gridview > child:selected,
+listview.view > row:selected,
+iconview:selected,
+treeview.view:selected {
+  background-color: #174d3a;
+  color: #eee8dc;
+}
+.navigation-sidebar > row:selected image,
+gridview > child:selected image {
+  color: #eee8dc;
+}
+.navigation-sidebar > row:hover:not(:selected),
+gridview > child:hover:not(:selected) {
+  background-color: rgba(23, 32, 28, 0.07);
+}
+
+/* Nautilus file icons are cream paper; on hover or selection they light up to white.
+   brightness(1.16) takes keycap #eee8dc to #ffffff and leaves the graphite lines near-
+   unchanged. Thumbnails keep their real colours. Keeps Nautilus' own drop shadow. */
+gridview > child:hover .nautilus-image:not(.file-thumbnail),
+gridview > child:selected .nautilus-image:not(.file-thumbnail),
+columnview > listview > row:hover .nautilus-image:not(.file-thumbnail),
+columnview > listview > row:selected .nautilus-image:not(.file-thumbnail) {
+  filter: brightness(1.16) drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.3));
+}
+
+/* GTK3 Adwaita-dark paints header bars itself; pin them to the keycap surface. */
+headerbar,
+.titlebar,
+headerbar:backdrop,
+.titlebar:backdrop {
+  background-color: #eee8dc;
+  background-image: none;
+  color: #17201c;
+  border-color: #cfc8bb;
+  box-shadow: inset 0 -1px #cfc8bb;
+}
+headerbar button,
+headerbar label,
+headerbar image {
+  color: #17201c;
+}
+
+/* ---------------------------------------------------------------- Nautilus
+   Matched to the workstation mockup's "files" window: flat mono breadcrumb, small square
+   toolbar buttons, rounded tiles, compact sidebar rows, pine scrollbar. Scoped to Nautilus
+   (and its file chooser) so other GTK apps keep their own header bars. */
+
+/* Breadcrumb: no pill; IBM Plex Mono 11px, parents muted, current folder graphite. */
+.nautilus-pathbar {
+  background: none;
+  box-shadow: none;
+}
+.nautilus-path-button {
+  margin: 0 1px;
+  padding: 0 6px;
+  min-height: 26px;
+  border-radius: 5px;
+  color: #4b5750;
+}
+.nautilus-pathbar label {
+  font-family: "BlexMono Nerd Font", "IBM Plex Mono", monospace;
+  font-size: 11px;
+  font-weight: 400;
+}
+.nautilus-path-button.current-dir {
+  color: #17201c;
+}
+.nautilus-path-button.current-dir label {
+  font-weight: 500;
+}
+.nautilus-path-button:not(.current-dir):hover {
+  background-color: #d8d2c6;
+  color: #17201c;
+}
+
+/* Toolbar buttons: 30x28, radius 5, flat; active or hovered sit on #d8d2c6. */
+.nautilus-window headerbar button:not(.nautilus-path-button),
+.nautilus-file-chooser headerbar button:not(.nautilus-path-button) {
+  min-width: 30px;
+  min-height: 28px;
+  padding: 0;
+  border-radius: 5px;
+  background: none;
+  box-shadow: none;
+  color: #5d6861;
+}
+.nautilus-window headerbar button:not(.nautilus-path-button):hover,
+.nautilus-window headerbar button:not(.nautilus-path-button):checked,
+.nautilus-file-chooser headerbar button:not(.nautilus-path-button):hover,
+.nautilus-file-chooser headerbar button:not(.nautilus-path-button):checked {
+  background-color: #d8d2c6;
+  color: #17201c;
+}
+.nautilus-window splitbutton > separator {
+  background: none;
+}
+
+/* Sidebar rows: radius 5, 8/9 padding, 12px Sora; hover #d3cdbf. */
+.nautilus-window .navigation-sidebar > row {
+  min-height: 0;
+  padding: 8px 9px;
+  margin: 1px 0;
+  border-radius: 5px;
+  font-size: 12px;
+}
+.nautilus-window .navigation-sidebar > row:hover:not(:selected) {
+  background-color: #d3cdbf;
+}
+
+/* Grid: radius-7 tiles, 8px gaps, 11px labels; hover #dfd9cd. */
+.nautilus-grid-view gridview {
+  padding: 22px;
+  border-spacing: 8px;
+}
+.nautilus-grid-view gridview > child,
+.nautilus-grid-view .nautilus-view-cell {
+  border-radius: 7px;
+}
+.nautilus-grid-view .nautilus-view-cell {
+  padding: 13px 8px 11px;
+}
+.nautilus-grid-view gridview > child:hover:not(:selected) {
+  background-color: #dfd9cd;
+}
+.nautilus-grid-view .icon-ui-labels-box label {
+  font-size: 11px;
+}
+
+/* List: radius-5 rows; column headers in muted mono. */
+.nautilus-list-view columnview > listview > row {
+  border-radius: 5px;
+}
+.nautilus-list-view columnview > listview > row:hover:not(:selected) {
+  background-color: #dfd9cd;
+}
+.nautilus-list-view columnview > header > button {
+  font-family: "BlexMono Nerd Font", "IBM Plex Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #4b5750;
+}
+
+/* Pine scrollbar on the cream page. */
+.nautilus-window scrollbar slider {
+  background-color: #c78a4b;
+  min-width: 6px;
+  min-height: 6px;
+}

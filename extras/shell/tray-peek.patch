@@ -1,0 +1,67 @@
+--- a/Tray.qml	2026-11-09 12:50:59.304437031 -0300
++++ b/Tray.qml	2026-11-09 12:50:59.306288996 -0300
+@@ -49,7 +49,11 @@
+   readonly property Item openPanelIndicatorItem: trayMenuOpen ? activeTrayAnchor : null
+   // Match Waybar's group/tray-expander drawer transition-duration.
+   readonly property int animationDuration: 600
+-  property real revealProgress: expanded || holdOpen ? 1 : 0
++  // Bench Grid: with the bar's tray peek on ([bar] tray-peek = true), there is no chevron and the
++  // drawer opens while the pointer is anywhere over the right section.
++  readonly property bool peekMode: !!bar && bar.trayPeek === true
++  readonly property bool peekOpen: peekMode && bar.rightSectionRevealHeld === true
++  property real revealProgress: expanded || holdOpen || peekOpen ? 1 : 0
+   readonly property real revealExtent: drawerExtent * revealProgress
+   // The pinned icons sit against the tray's fixed edge with the chevron past
+   // them. Opening, the drawer grows the tray between the two and pushes the
+@@ -269,7 +273,7 @@
+     Item {
+       id: horizontalTrayRoot
+ 
+-      readonly property int chevronWidth: root.hasDrawer ? expandIcon.implicitWidth : 0
++      readonly property int chevronWidth: root.hasDrawer && !root.peekMode ? expandIcon.implicitWidth : 0
+       readonly property var sectionShown: root.shownSection(drawerArea.x + trayClip.x, trayClip.width, drawerArea.x + trayClip.x + drawerContent.x + section.x, section.width)
+ 
+       implicitWidth: pinnedRow.implicitWidth + chevronWidth + root.revealExtent
+@@ -288,6 +292,7 @@
+ 
+         BarIconButton {
+           id: expandIcon
++          visible: !root.peekMode
+           bar: root.bar
+           width: implicitWidth
+           height: implicitHeight
+@@ -302,7 +307,7 @@
+         // beside the pinned icons, the section nearest them.
+         Item {
+           id: trayClip
+-          x: root.fixedAtStart ? 0 : expandIcon.width
++          x: root.fixedAtStart ? 0 : horizontalTrayRoot.chevronWidth
+           anchors.verticalCenter: parent.verticalCenter
+           width: root.revealExtent
+           height: root.barSize
+@@ -359,7 +364,7 @@
+     Item {
+       id: verticalTrayRoot
+ 
+-      readonly property int chevronHeight: root.hasDrawer ? expandIcon.implicitHeight : 0
++      readonly property int chevronHeight: root.hasDrawer && !root.peekMode ? expandIcon.implicitHeight : 0
+       readonly property var sectionShown: root.shownSection(drawerArea.y + trayClip.y, trayClip.height, drawerArea.y + trayClip.y + drawerContent.y + section.y, section.height)
+ 
+       implicitWidth: root.barSize
+@@ -378,6 +383,7 @@
+ 
+         BarIconButton {
+           id: expandIcon
++          visible: !root.peekMode
+           bar: root.bar
+           width: implicitWidth
+           height: implicitHeight
+@@ -393,7 +399,7 @@
+         // beside the pinned icons, the section nearest them.
+         Item {
+           id: trayClip
+-          y: root.fixedAtStart ? 0 : expandIcon.height
++          y: root.fixedAtStart ? 0 : verticalTrayRoot.chevronHeight
+           anchors.horizontalCenter: parent.horizontalCenter
+           width: root.barSize
+           height: root.revealExtent

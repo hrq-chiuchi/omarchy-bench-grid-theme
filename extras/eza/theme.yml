@@ -1,0 +1,83 @@
+# bench-grid: eza colours, installed to ~/.config/eza/theme.yml by the theme-set hook.
+# Directories are sage, files cream; amber only for changed git state.
+filekinds:
+  normal: {foreground: "#d9d2c3"}
+  directory: {foreground: "#a8c7b7", is_bold: true}
+  symlink: {foreground: "#8fc1b0"}
+  pipe: {foreground: "#c49aae"}
+  block_device: {foreground: "#c49aae"}
+  char_device: {foreground: "#c49aae"}
+  socket: {foreground: "#c49aae"}
+  special: {foreground: "#d8b26a"}
+  executable: {foreground: "#86b896", is_bold: true}
+  mount_point: {foreground: "#a8c7b7", is_bold: true, is_underline: true}
+perms:
+  user_read: {foreground: "#eee8dc"}
+  user_write: {foreground: "#d8b26a"}
+  user_execute_file: {foreground: "#86b896"}
+  user_execute_other: {foreground: "#86b896"}
+  group_read: {foreground: "#a8c7b7"}
+  group_write: {foreground: "#d8b26a"}
+  group_execute: {foreground: "#86b896"}
+  other_read: {foreground: "#6f857a"}
+  other_write: {foreground: "#c78a4b"}
+  other_execute: {foreground: "#6f857a"}
+  special_user_file: {foreground: "#c49aae"}
+  special_other: {foreground: "#c49aae"}
+  attribute: {foreground: "#6f857a"}
+size:
+  major: {foreground: "#6f857a"}
+  minor: {foreground: "#6f857a"}
+  number_byte: {foreground: "#d9d2c3"}
+  number_kilo: {foreground: "#d9d2c3"}
+  number_mega: {foreground: "#eee8dc"}
+  number_giga: {foreground: "#c78a4b"}
+  number_huge: {foreground: "#e07a5f"}
+  unit_byte: {foreground: "#6f857a"}
+  unit_kilo: {foreground: "#6f857a"}
+  unit_mega: {foreground: "#6f857a"}
+  unit_giga: {foreground: "#6f857a"}
+  unit_huge: {foreground: "#6f857a"}
+users:
+  user_you: {foreground: "#a8c7b7"}
+  user_root: {foreground: "#e07a5f"}
+  user_other: {foreground: "#eee8dc"}
+  group_yours: {foreground: "#6f857a"}
+  group_other: {foreground: "#6f857a"}
+  group_root: {foreground: "#e07a5f"}
+links:
+  normal: {foreground: "#6f857a"}
+  multi_link_file: {foreground: "#c78a4b"}
+git:
+  new: {foreground: "#86b896"}
+  modified: {foreground: "#f3a712"}
+  deleted: {foreground: "#e07a5f"}
+  renamed: {foreground: "#8fc1b0"}
+  ignored: {foreground: "#6f857a"}
+  conflicted: {foreground: "#e07a5f", is_bold: true}
+git_repo:
+  branch_main: {foreground: "#a8c7b7"}
+  branch_other: {foreground: "#c78a4b"}
+  git_clean: {foreground: "#86b896"}
+  git_dirty: {foreground: "#f3a712"}
+file_type:
+  image: {foreground: "#c49aae"}
+  video: {foreground: "#c49aae"}
+  music: {foreground: "#8aaec4"}
+  crypto: {foreground: "#86b896"}
+  document: {foreground: "#eee8dc"}
+  compressed: {foreground: "#c78a4b"}
+  temp: {foreground: "#6f857a"}
+  compiled: {foreground: "#a8845c"}
+  build: {foreground: "#d8b26a", is_underline: true}
+  source: {foreground: "#eee8dc"}
+punctuation: {foreground: "#42584d"}
+date: {foreground: "#8aaec4"}
+inode: {foreground: "#6f857a"}
+blocks: {foreground: "#6f857a"}
+header: {foreground: "#eee8dc", is_bold: true, is_underline: true}
+octal: {foreground: "#c78a4b"}
+flags: {foreground: "#6f857a"}
+control_char: {foreground: "#e07a5f"}
+broken_symlink: {foreground: "#e07a5f"}
+broken_path_overlay: {is_underline: true}

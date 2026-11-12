@@ -1,0 +1,56 @@
+--- a/ActiveWindow.qml	2026-11-09 16:45:57.874318948 -0300
++++ b/ActiveWindow.qml	2026-11-09 16:54:03.371083514 -0300
+@@ -12,9 +12,20 @@
+ 
+   readonly property var toplevel: ToplevelManager.activeToplevel
+   readonly property string title: toplevel ? (toplevel.title || toplevel.appId || "") : ""
++  // Bench Grid: the bar shows the program's name, not the window title (that stays in the tooltip).
++  // The name comes from the app's desktop entry (foot -> Foot, org.gnome.Nautilus -> Files); without
++  // one, the last part of the app id, capitalised.
++  readonly property string appId: toplevel ? (toplevel.appId || "") : ""
++  readonly property string appName: {
++    if (appId === "") return title
++    var entry = DesktopEntries.heuristicLookup(appId)
++    if (entry && entry.name) return entry.name
++    var part = appId.split(".").pop()
++    return part.charAt(0).toUpperCase() + part.slice(1)
++  }
+   readonly property int maxLabelWidth: Number(setting("maxWidth", 280))
+ 
+-  visible: title !== "" && !vertical
++  visible: appName !== "" && !vertical
+   implicitWidth: visible ? Math.min(maxLabelWidth, labelText.implicitWidth) + Style.spacing.controlPaddingX * 2 : 0
+   implicitHeight: barSize
+ 
+@@ -34,7 +45,7 @@
+       anchors.verticalCenter: parent.verticalCenter
+       anchors.left: parent.left
+       width: parent.width
+-      text: root.title
++      text: root.appName
+       color: root.bar ? root.bar.barForeground : Commons.Color.foreground
+       font.family: root.bar ? root.bar.fontFamily : Style.font.family
+       font.pixelSize: Style.font.body
+@@ -46,18 +57,13 @@
+   MouseArea {
+     anchors.fill: parent
+     hoverEnabled: true
+-    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
++    // Bench Grid: left-click only focuses the window. The stock widget also closed it on middle- and
++    // right-click, which made a stray click on the title lose the focused window.
++    acceptedButtons: Qt.LeftButton
+     cursorShape: Qt.PointingHandCursor
+ 
+     onClicked: function(mouse) {
+-      if (!root.toplevel) return
+-      if (mouse.button === Qt.MiddleButton) {
+-        root.toplevel.close()
+-      } else if (mouse.button === Qt.RightButton) {
+-        root.toplevel.close()
+-      } else {
+-        root.toplevel.activate()
+-      }
++      if (root.toplevel) root.toplevel.activate()
+     }
+     onEntered: if (root.bar) root.bar.showTooltip(root, root.title)
+     onExited: if (root.bar) root.bar.hideTooltip(root)

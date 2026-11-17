@@ -5,7 +5,7 @@ import qs.Commons
 import qs.Ui
 
 // Bench Grid: stay-awake as the mockup's mode mark, a 7px dot. Amber while the system stays awake;
-// otherwise hidden, and a hollow ring while the bar's indicator peek is open, so it can be switched
+// otherwise a hollow ring (always with the tray peek, else only while the indicator peek is open), so it can be switched
 // on the way the stock indicator can. Replaces StayAwake in omarchy.indicators (drop it from that
 // entry's "items"). Third-party widgets get no first-party services, so the state comes from the file
 // the idle service itself watches, and the toggle goes through `omarchy toggle idle`.
@@ -21,6 +21,8 @@ BarWidget {
     ? bar.rightSectionRevealHeld === true
     : bar.centerSectionRevealHeld === true && bar._centerHoverRevealSuppressed !== true)
 
+  readonly property bool peekFades: inRightSection && !!bar && bar.trayPeek === true && isFinite(Number(bar.rightPeekFade)) && !alwaysShow
+
   // "alwaysShow": true in its bar entry keeps the ring showing when off (for the tray drawer, which
   // has no indicator peek of its own), as omarchy.indicators' own alwaysShow does.
   readonly property bool alwaysShow: !!settings && settings.alwaysShow === true
@@ -30,8 +32,9 @@ BarWidget {
   readonly property real slotLength: settings && isFinite(Number(settings.slot)) && Number(settings.slot) > 0 ? Number(settings.slot) : Style.bar.statusSlot
   readonly property real dotOffset: settings && isFinite(Number(settings.offset)) ? Number(settings.offset) : 0
 
-  // Bar.qml collapses the slot of an invisible widget, so off and unpeeked takes no room.
-  visible: stayAwake || peekOpen || alwaysShow
+  // Bar.qml collapses the slot of an invisible widget, so off and unpeeked takes no room. With the tray
+  // peek the hollow ring stays on the bar instead, always clickable, so opening the peek never shifts it.
+  visible: stayAwake || peekOpen || alwaysShow || peekFades
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 
@@ -82,7 +85,9 @@ BarWidget {
     // size (an iconComponent would be scaled up to the full icon size).
     text: " "
     tooltipText: root.stayAwake ? strings.t("tooltip.allowIdle") : strings.t("tooltip.stayAwake")
-    dimmed: !root.stayAwake
+    // With the bar's tray peek the ring stays on the bar, a little softer than the other icons.
+    dimmed: !root.stayAwake && !root.peekFades
+    opacity: !root.stayAwake && root.peekFades ? 0.6 : 1
     horizontalMargin: 5
     verticalPadding: 5
     fixedWidth: root.vertical ? -1 : root.slotLength

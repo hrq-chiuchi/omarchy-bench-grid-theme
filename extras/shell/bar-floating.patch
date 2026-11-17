@@ -1,6 +1,6 @@
---- a/Bar.qml	2026-11-09 12:50:59.299219387 -0300
-+++ b/Bar.qml	2026-11-09 15:46:18.305491503 -0300
-@@ -71,6 +71,16 @@
+--- a/Bar.qml	2026-11-17 12:46:04.392125477 -0300
++++ b/Bar.qml	2026-11-17 12:46:04.398120638 -0300
+@@ -71,6 +71,68 @@
    // by this name through their bar API.
    property bool centerSectionRevealHeld: false
    property bool centerHoverRevealSuppressed: false
@@ -11,13 +11,65 @@
 +  property int rightHoverCount: 0
 +  property bool rightSectionRevealHeld: false
 +  // With the tray peek on, the indicator peek (inactive indicators revealed) follows the right section
-+  // too, and the left-side peek is off: indicators placed beside the tray then slide out with its drawer,
++  // too, and the left-side peek is off: indicators placed beside the tray then fade in with its drawer,
 +  // while active ones stay on the bar.
-+  onRightSectionRevealHeldChanged: if (trayPeek) centerSectionRevealHeld = rightSectionRevealHeld
++  onRightSectionRevealHeldChanged: {
++    if (!trayPeek) return
++    if (rightSectionRevealHeld) liftPeekIndicators()
++    centerSectionRevealHeld = rightSectionRevealHeld
++  }
++  // The peek fades instead of sliding: opening, the drawer and the inactive indicators take their room at
++  // once and fade in; closing, they fade out and only then give the room back, so nothing moves while it
++  // shows. Read by the cloned tray and the stay-awake widget through the bar API.
++  property real rightPeekFade: 0
++  NumberAnimation {
++    id: rightPeekFadeAnim
++    target: root
++    property: "rightPeekFade"
++    duration: Style.duration(180)
++    easing.type: Easing.OutCubic
++    onFinished: if (root.rightPeekFade === 0 && root.rightHoverCount === 0) root.rightSectionRevealHeld = false
++  }
++  function fadeRightPeek(to) {
++    if (rightPeekFade === to && !rightPeekFadeAnim.running) {
++      if (to === 0 && rightHoverCount === 0) rightSectionRevealHeld = false
++      return
++    }
++    rightPeekFadeAnim.stop()
++    rightPeekFadeAnim.from = rightPeekFade
++    rightPeekFadeAnim.to = to
++    rightPeekFadeAnim.start()
++  }
++  // The stock indicators draw inactive ones at 0.45 and set it by hand (no binding), and a clone of
++  // them loses its services, so the bar reaches in: inactive indicators show at full strength, the same
++  // colour as every other icon, and their block takes the peek's fade.
++  property var liftedPeekIndicators: []
++  function liftPeekIndicators() {
++    for (var i = 0; i < moduleSlots.length; i++) {
++      var item = moduleSlots[i] ? moduleSlots[i].activeItem : null
++      if (item && /\.indicators$/.test(String(item.moduleName || ""))) liftIndicatorsIn(item)
++    }
++  }
++  function liftIndicatorsIn(node) {
++    if (!node) return
++    if (node.indicatorBlock === "inactive" && "indicatorModel" in node && liftedPeekIndicators.indexOf(node) === -1) {
++      node.opacity = Qt.binding(function() { return root.rightPeekFade })
++      liftedPeekIndicators.push(node)
++    }
++    if (node.indicatorBlock === "inactive" && "inactiveRevealed" in node && liftedPeekIndicators.indexOf(node) === -1) {
++      var indicator = node
++      var lift = function() { if (indicator.opacity > 0 && indicator.opacity < 1) indicator.opacity = 1 }
++      indicator.opacityChanged.connect(lift)
++      lift()
++      liftedPeekIndicators.push(indicator)
++    }
++    var kids = node.children || []
++    for (var k = 0; k < kids.length; k++) liftIndicatorsIn(kids[k])
++  }
    property int barConfigSerial: 0
    property string position: "top"
    // Resolves through fontconfig at paint time (Style.font.family defaults
-@@ -83,7 +93,24 @@
+@@ -83,7 +145,24 @@
    property color themeContrastForeground: Commons.Color.background
    property color transparentForeground: Commons.Color.bar.text
    property color foreground: themeForeground
@@ -43,7 +95,7 @@
    property bool foregroundAnimationEnabled: true
    property color background: Commons.Color.bar.background
    readonly property color glassBackground: Qt.rgba(background.r, background.g, background.b, Math.min(background.a, 0.35))
-@@ -221,7 +248,10 @@
+@@ -221,7 +300,11 @@
  
    Component {
      id: pluginBarApiComponent
@@ -51,11 +103,12 @@
 +    PluginBarApi {
 +      property bool trayPeek: false
 +      property bool rightSectionRevealHeld: false
++      property real rightPeekFade: 1
 +    }
    }
  
    function publicLayoutConfig() {
-@@ -231,7 +261,9 @@
+@@ -231,7 +314,9 @@
    function bindPluginBarApi(api) {
      if (!api) return
      api.foreground = Qt.binding(function() { return root.foreground })
@@ -66,16 +119,17 @@
      api.background = Qt.binding(function() { return root.background })
      api.urgent = Qt.binding(function() { return root.urgent })
      api.fontFamily = Qt.binding(function() { return root.fontFamily })
-@@ -242,6 +274,8 @@
+@@ -242,6 +327,9 @@
      api.foregroundAnimationEnabled = Qt.binding(function() { return root.foregroundAnimationEnabled })
      api.centerSectionRevealHeld = Qt.binding(function() { return root.centerSectionRevealHeld })
      api._centerHoverRevealSuppressed = Qt.binding(function() { return root.centerHoverRevealSuppressed })
 +    api.trayPeek = Qt.binding(function() { return root.trayPeek })
 +    api.rightSectionRevealHeld = Qt.binding(function() { return root.rightSectionRevealHeld })
++    api.rightPeekFade = Qt.binding(function() { return root.rightPeekFade })
      api.traySectionDragActive = Qt.binding(function() { return root.traySectionDragActive })
      api.traySectionPopoutOpen = Qt.binding(function() { return root.traySectionPopoutOpen })
      root.syncPluginBarApiObjects(api)
-@@ -715,6 +749,28 @@
+@@ -715,6 +803,28 @@
    readonly property bool vertical: position === "left" || position === "right"
    readonly property int barSize: vertical ? Style.bar.sizeVertical : Style.bar.sizeHorizontal
  
@@ -104,7 +158,7 @@
    // Display cutouts (a camera notch) the platform's own package describes in
    // the fixed platform root, which no environment variable moves. Most machines
    // have none. It is read as the shell starts (blockLoading), so a bar surface
-@@ -762,8 +818,9 @@
+@@ -762,8 +872,9 @@
    // the cutout is this panel's minimum sensible top-bar height. An
    // intentionally taller bar still wins.
    function thicknessFor(screen) {
@@ -116,7 +170,7 @@
    }
  
    // Each screen's bar thickness, by screen name: barSize, or more where a notch
-@@ -1024,6 +1081,24 @@
+@@ -1024,6 +1135,25 @@
      }
    }
  
@@ -127,6 +181,7 @@
 +    if (rightHoverCount > 0) {
 +      rightSectionRevealTimer.stop()
 +      rightSectionRevealHeld = true
++      fadeRightPeek(1)
 +    } else {
 +      rightSectionRevealTimer.restart()
 +    }
@@ -135,13 +190,13 @@
 +  Timer {
 +    id: rightSectionRevealTimer
 +    interval: 200
-+    onTriggered: if (root.rightHoverCount === 0) root.rightSectionRevealHeld = false
++    onTriggered: if (root.rightHoverCount === 0) root.fadeRightPeek(0)
 +  }
 +
    function setCenterHoverRevealSuppressed(value) {
      centerHoverRevealSuppressed = !!value
    }
-@@ -1724,7 +1799,7 @@
+@@ -1724,7 +1854,7 @@
      // An explicit zone instead of Auto: the reserved area stays the strip's
      // thickness though the window spans its screen.
      exclusionMode: root.barHidden ? ExclusionMode.Ignore : ExclusionMode.Normal
@@ -150,7 +205,7 @@
  
      // While this window's widget or bar-move drag is live, the whole surface
      // takes input (mask below), so the pointer never leaves the bar surface
-@@ -1833,20 +1908,33 @@
+@@ -1833,20 +1963,33 @@
        width: root.vertical ? barWindow.thickness : parent.width
        height: root.vertical ? parent.height : barWindow.thickness
  
@@ -187,7 +242,7 @@
            onPeekingChanged: root.setBarHovered(peeking)
            // Unplugging a monitor destroys its bar without a leave event, which
            // would strand this surface's tally and hold the peek open for good.
-@@ -1950,7 +2038,7 @@
+@@ -1950,7 +2093,7 @@
            window: barWindow
            pool: horizontalPool
            anchors.left: parent.left
@@ -196,7 +251,7 @@
            anchors.verticalCenter: parent.verticalCenter
          }
  
-@@ -1959,7 +2047,7 @@
+@@ -1959,7 +2102,7 @@
            pool: horizontalPool
            id: rightModules
            anchors.right: parent.right
@@ -205,7 +260,7 @@
            anchors.verticalCenter: parent.verticalCenter
          }
  
-@@ -1999,7 +2087,7 @@
+@@ -1999,7 +2142,7 @@
            window: barWindow
            pool: verticalPool
            anchors.top: parent.top
@@ -214,7 +269,7 @@
            anchors.horizontalCenter: parent.horizontalCenter
          }
  
-@@ -2007,7 +2095,7 @@
+@@ -2007,7 +2150,7 @@
            window: barWindow
            pool: verticalPool
            anchors.bottom: parent.bottom
@@ -223,7 +278,7 @@
            anchors.horizontalCenter: parent.horizontalCenter
          }
        }
-@@ -2275,6 +2363,12 @@
+@@ -2275,6 +2418,12 @@
      keys: root.layoutWidgets.sections.right
      region: "right"
      fixedEdge: "end"
@@ -236,7 +291,7 @@
    }
  
    // The gesture area under the whole bar, with the center sections drawn over
-@@ -2980,6 +3074,13 @@
+@@ -2980,6 +3129,13 @@
          anchors.centerIn: parent
          width: slot.widgetWidth
          height: slot.widgetHeight

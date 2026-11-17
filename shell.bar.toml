@@ -12,7 +12,7 @@ icon-slot        = 23
 icon-canvas      = 14
 icon-font        = 11
 icon-size        = 11
-status-slot      = 18
+status-slot      = 23
 # Floating card. Read only by the Bench Grid bar patch (extras/shell); the stock bar ignores these.
 inset            = 8
 radius           = 8
@@ -21,7 +21,8 @@ border-width     = 1
 # padding: inner margin on every side (workspace keys sit inside it). gap: card to windows.
 padding          = 4
 gap              = 6
-# Tray peek: no chevron; the tray drawer opens while the pointer is over the right section.
+# Tray peek: no chevron; the tray drawer opens while the pointer is over the right section. It fades in and
+# out in place (no slide), with the inactive indicators, which then show at full strength like every icon.
 # Read only by the Bench Grid bar patch and tray clone (extras/shell).
 tray-peek        = true
 # Muted icons: bar icons at rest in a soft cream (darker than the keycap cream), lit on hover or with their

@@ -1,6 +1,6 @@
---- a/Tray.qml	2026-11-09 12:50:59.304437031 -0300
-+++ b/Tray.qml	2026-11-09 12:50:59.306288996 -0300
-@@ -49,7 +49,11 @@
+--- a/Tray.qml	2026-11-17 12:46:04.420974871 -0300
++++ b/Tray.qml	2026-11-17 12:46:04.424362727 -0300
+@@ -49,7 +49,14 @@
    readonly property Item openPanelIndicatorItem: trayMenuOpen ? activeTrayAnchor : null
    // Match Waybar's group/tray-expander drawer transition-duration.
    readonly property int animationDuration: 600
@@ -10,10 +10,21 @@
 +  readonly property bool peekMode: !!bar && bar.trayPeek === true
 +  readonly property bool peekOpen: peekMode && bar.rightSectionRevealHeld === true
 +  property real revealProgress: expanded || holdOpen || peekOpen ? 1 : 0
++  // In peek mode the drawer does not slide: it takes its room at once and its contents fade with the
++  // bar's peek (the bar keeps the room until the fade-out ends). A panel open from it keeps it lit.
++  readonly property real drawerOpacity: peekMode && !holdOpen && bar && isFinite(Number(bar.rightPeekFade)) ? Number(bar.rightPeekFade) : 1
    readonly property real revealExtent: drawerExtent * revealProgress
    // The pinned icons sit against the tray's fixed edge with the chevron past
    // them. Opening, the drawer grows the tray between the two and pushes the
-@@ -269,7 +273,7 @@
+@@ -243,6 +250,7 @@
+   implicitHeight: root.vertical ? trayContent.implicitHeight : root.barSize
+ 
+   Behavior on revealProgress {
++    enabled: !root.peekMode
+     NumberAnimation { duration: Style.duration(root.animationDuration); easing.type: Easing.OutCubic }
+   }
+ 
+@@ -269,7 +277,7 @@
      Item {
        id: horizontalTrayRoot
  
@@ -22,7 +33,7 @@
        readonly property var sectionShown: root.shownSection(drawerArea.x + trayClip.x, trayClip.width, drawerArea.x + trayClip.x + drawerContent.x + section.x, section.width)
  
        implicitWidth: pinnedRow.implicitWidth + chevronWidth + root.revealExtent
-@@ -288,6 +292,7 @@
+@@ -288,6 +296,7 @@
  
          BarIconButton {
            id: expandIcon
@@ -30,7 +41,7 @@
            bar: root.bar
            width: implicitWidth
            height: implicitHeight
-@@ -302,7 +307,7 @@
+@@ -302,7 +311,7 @@
          // beside the pinned icons, the section nearest them.
          Item {
            id: trayClip
@@ -39,7 +50,15 @@
            anchors.verticalCenter: parent.verticalCenter
            width: root.revealExtent
            height: root.barSize
-@@ -359,7 +364,7 @@
+@@ -310,6 +319,7 @@
+ 
+           Item {
+             id: drawerContent
++            opacity: root.drawerOpacity
+             x: root.fixedAtStart ? root.revealExtent - root.drawerExtent : 0
+             width: root.drawerExtent
+             height: root.barSize
+@@ -359,7 +369,7 @@
      Item {
        id: verticalTrayRoot
  
@@ -48,7 +67,7 @@
        readonly property var sectionShown: root.shownSection(drawerArea.y + trayClip.y, trayClip.height, drawerArea.y + trayClip.y + drawerContent.y + section.y, section.height)
  
        implicitWidth: root.barSize
-@@ -378,6 +383,7 @@
+@@ -378,6 +388,7 @@
  
          BarIconButton {
            id: expandIcon
@@ -56,7 +75,7 @@
            bar: root.bar
            width: implicitWidth
            height: implicitHeight
-@@ -393,7 +399,7 @@
+@@ -393,7 +404,7 @@
          // beside the pinned icons, the section nearest them.
          Item {
            id: trayClip
@@ -65,3 +84,11 @@
            anchors.horizontalCenter: parent.horizontalCenter
            width: root.barSize
            height: root.revealExtent
+@@ -401,6 +412,7 @@
+ 
+           Item {
+             id: drawerContent
++            opacity: root.drawerOpacity
+             y: root.fixedAtStart ? root.revealExtent - root.drawerExtent : 0
+             width: root.barSize
+             height: root.drawerExtent
